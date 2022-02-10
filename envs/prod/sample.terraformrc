@@ -1,0 +1,6 @@
+subscription = "SUBSCRIPTION_UUID"
+tenant = "TENANT_UUID"
+registry_server = "xxx.azurecr.io"
+registry_username = "registry_username"
+registry_password = "password"
+access_key = "asdasd...."
