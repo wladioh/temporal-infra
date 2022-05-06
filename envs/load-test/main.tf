@@ -17,7 +17,7 @@ terraform {
     }
   }
   backend "azurerm" {
-    key                  = "prod.terraform.tfstate"
+    key                  = "loadtest.terraform.tfstate"
     resource_group_name  = "tfstate"
     storage_account_name = "tfstate12574"
     container_name       = "tfstate-temporal"
@@ -64,14 +64,14 @@ data "terraform_remote_state" "base_infra" {
 }
 
 resource "azurerm_resource_group" "prod" {
-  name     = "temporal"
+  name     = "loadtest"
   location = var.location
 }
 
 module "aks" {
   source              = "../../modules/aks"
   acr_id              = data.terraform_remote_state.base_infra.outputs.acr_id
-  cluster_name        = "temporal-cluster"
+  cluster_name        = "load-test-cluster"
   resource_group_name = azurerm_resource_group.prod.name
   # public_ip_id      = data.terraform_remote_state.base_infra.outputs.public_ip_id
   depends_on = [
@@ -79,28 +79,9 @@ module "aks" {
   ]
 }
 
-module "ingress" {
-  source = "../../modules/ingress"
-  depends_on = [
-    module.aks
-  ]
-}
-module "temporalio" {
-  source = "../../modules/temporalio"
-  depends_on = [
-    module.ingress
-  ]
-}
 module "dashboard" {
   source = "../../modules/dashboard"
   depends_on = [
-    module.temporalio
-  ]
-}
-
-module "postgres" {
-  source = "../../modules/postgres"
-  depends_on = [
-    module.dashboard
+    module.aks
   ]
 }

@@ -4,4 +4,4 @@ https://docs.microsoft.com/en-us/azure/developer/terraform/authenticate-to-azure
 
 terraform apply -auto-approve -var-file .terraformrc
 
-terraform destroy -var-file .terraformrc
+terraform destroy -auto-approve -var-file .terraformrc

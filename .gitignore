@@ -2,3 +2,5 @@
 .terraform.lock.hcl
 .terraform
 .env
+load-test/__pycache__
+envs/prod/errored.tfstate
