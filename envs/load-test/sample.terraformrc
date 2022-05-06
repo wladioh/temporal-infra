@@ -1,0 +1,3 @@
+task_file = "../../load-test/task.py"
+locust_image = "python:3.9.12-slim-bullseye"
+target_host =  "https://localhost:8080"

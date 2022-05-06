@@ -1,6 +1,8 @@
-variable "resource_group_name" {
+variable "target_host" {
 }
 
-variable "location" {
-  default = "Brazil South"
+variable "locust_image" {
+}
+
+variable "task_file" {
 }

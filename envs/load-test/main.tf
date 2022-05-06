@@ -88,9 +88,9 @@ module "dashboard" {
 
 module "locust" {
   source       = "../../modules/locust"
-  locust_image = "python:3.9.12-slim-bullseye"
-  target_host  = "https://google.com.br"
-  task_file    = abspath("../../load-test/task.py")
+  locust_image = var.locust_image
+  target_host  = var.target_host
+  task_file    = abspath(var.task_file)
   depends_on = [
     module.dashboard
   ]
