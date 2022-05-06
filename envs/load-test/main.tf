@@ -75,7 +75,7 @@ module "aks" {
   resource_group_name = azurerm_resource_group.prod.name
   # public_ip_id      = data.terraform_remote_state.base_infra.outputs.public_ip_id
   depends_on = [
-    azurerm_network_watcher.network_watcher
+    azurerm_resource_group.prod
   ]
 }
 
@@ -83,5 +83,15 @@ module "dashboard" {
   source = "../../modules/dashboard"
   depends_on = [
     module.aks
+  ]
+}
+
+module "locust" {
+  source       = "../../modules/locust"
+  locust_image = "python:3.9.12-slim-bullseye"
+  target_host  = "https://google.com.br"
+  task_file    = abspath("../../load-test/task.py")
+  depends_on = [
+    module.dashboard
   ]
 }

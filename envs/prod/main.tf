@@ -75,7 +75,7 @@ module "aks" {
   resource_group_name = azurerm_resource_group.prod.name
   # public_ip_id      = data.terraform_remote_state.base_infra.outputs.public_ip_id
   depends_on = [
-    azurerm_network_watcher.network_watcher
+    azurerm_resource_group.prod
   ]
 }
 
