@@ -12,12 +12,21 @@ data "local_file" "task_file" {
 
 data "template_file" "deploy" {
   for_each = fileset("${path.module}/deploy", "**/*.yaml")
-  template = file("${path.module}/${each.value}")
+  template = file("${path.module}/deploy/${each.value}")
   vars = {
-    TARGET_HOST       = "${var.target_host}"
-    LOCUST_IMAGE      = "${var.locust_image}"
-    TASK_FILE_CONTENT = "${data.local_file.task_file.content}"
-    WORKER_REPLICAS   = var.woker_replicas
+    TARGET_HOST     = "${var.target_host}"
+    LOCUST_IMAGE    = "${var.locust_image}"
+    WORKER_REPLICAS = var.woker_replicas
+  }
+}
+
+resource "kubernetes_config_map" "example" {
+  metadata {
+    name = "locust-tasks"
+  }
+
+  data = {
+    "tasks.py" = "${file(var.task_file)}"
   }
 }
 

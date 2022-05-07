@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: locust-tasks
-data:
-  tasks.py: |
-    ${TASK_FILE_CONTENT}
