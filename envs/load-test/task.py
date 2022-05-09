@@ -2,6 +2,9 @@
 # https://docs.locust.io/en/stable/index.html
 # https://www.blazemeter.com/blog/locust-monitoring-with-grafana-in-just-fifteen-minutes
 # https://github.com/GoogleCloudPlatform/distributed-load-testing-using-kubernetes
+# https://medium.com/devopsturkiye/locust-real-time-monitoring-with-grafana-66654bb4b32
+# https://docs.locust.io/en/2.8.1/running-in-docker.html#running-in-docker
+
 import time
 from locust import task, FastHttpUser, between
 

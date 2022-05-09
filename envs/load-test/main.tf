@@ -67,7 +67,7 @@ locals {
   cluster_name        = "load-test-cluster"
   resource_group_name = "loadtest"
 }
-resource "azurerm_resource_group" "prod" {
+resource "azurerm_resource_group" "loadtest" {
   name     = local.resource_group_name
   location = var.location
 }
@@ -75,24 +75,11 @@ module "aks" {
   source              = "../../modules/aks"
   acr_id              = data.terraform_remote_state.base_infra.outputs.acr_id
   cluster_name        = local.cluster_name
-  resource_group_name = azurerm_resource_group.prod.name
+  resource_group_name = azurerm_resource_group.loadtest.name
   # public_ip_id      = data.terraform_remote_state.base_infra.outputs.public_ip_id
   depends_on = [
-    azurerm_resource_group.prod
+    azurerm_resource_group.loadtest
   ]
-}
-resource "null_resource" "build_image" {
-  triggers = {
-    registry_server = data.terraform_remote_state.base_infra.outputs.registry_server
-    locust_image    = var.locust_image
-  }
-  provisioner "local-exec" {
-    command = "/bin/bash build.sh ${self.triggers.registry_server} ${self.triggers.locust_image}"
-  }
-  provisioner "local-exec" {
-    when    = destroy
-    command = "/bin/bash destroy.sh ${self.triggers.registry_server} ${self.triggers.locust_image}"
-  }
 }
 
 module "dashboard" {
@@ -102,18 +89,39 @@ module "dashboard" {
   ]
 }
 
-module "locust" {
-  source       = "../../modules/locust"
-  locust_image = "${data.terraform_remote_state.base_infra.outputs.registry_server}/${var.locust_image}"
-  target_host  = var.target_host
-  task_file    = abspath(var.task_file)
+resource "kubernetes_config_map" "locust_tasks" {
+  metadata {
+    name = "locust-tasks"
+  }
+  data = {
+    "main.py" = "${file(var.task_file)}"
+  }
   depends_on = [
-    module.dashboard
+    module.aks
   ]
 }
 
-resource "null_resource" "connect_to_cluster" {
-  provisioner "local-exec" {
-    command = "/bin/bash connect.sh ${local.resource_group_name} ${local.cluster_name}"
+resource "helm_release" "locust" {
+  name       = "locust"
+  repository = "https://charts.deliveryhero.io/"
+  chart      = "locust"
+  set {
+    name  = "loadtest.name"
+    value = "loadtest"
   }
+  set {
+    name  = "loadtest.locust_locustfile_configmap"
+    value = "locust-tasks"
+  }
+  set {
+    name  = "loadtest.locust_locustfile"
+    value = "main.py"
+  }
+  set {
+    name  = "worker.hpa.enabled"
+    value = true
+  }
+  depends_on = [
+    kubernetes_config_map.locust_tasks
+  ]
 }

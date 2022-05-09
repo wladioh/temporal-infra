@@ -1,1 +1,0 @@
-az aks get-credentials --resource-group $0 --name $1 --overwrite-existing
