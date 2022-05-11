@@ -8,7 +8,7 @@ terraform {
 
 
 data "local_file" "temporalio" {
-  filename = "${path.module}/temporalio.yaml"
+  filename = "${path.module}/temporal.yaml"
 }
 
 resource "kubectl_manifest" "default-namespace" {

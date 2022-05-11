@@ -8,7 +8,7 @@ terraform {
 
 resource "helm_release" "kubernetes-dashboard" {
   name             = "kubernetes-dashboard"
-  namespace        = "monitoring"
+  namespace        = "observability"
   create_namespace = true
   repository       = "https://kubernetes.github.io/dashboard/"
   chart            = "kubernetes-dashboard"

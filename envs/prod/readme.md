@@ -1,0 +1,1 @@
+az aks get-credentials --resource-group temporal --name temporal-cluster --overwrite-existing

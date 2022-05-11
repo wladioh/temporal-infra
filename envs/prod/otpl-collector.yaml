@@ -1,0 +1,40 @@
+# METRIS DONT WORKKING
+# ERROR: unknown field - doubleSum
+# https://github.com/open-telemetry/opentelemetry-js/issues/2675
+# https://github.com/open-telemetry/opentelemetry-js/issues/2574
+# https://github.com/open-telemetry/opentelemetry-js/issues/2480
+# https://github.com/aws-observability/aws-otel-collector/issues/707#issuecomment-990532997
+agentCollector:
+  enabled: false
+
+standaloneCollector:
+  enabled: true
+  containerLogs:
+    enabled: false
+
+  configOverride:
+    exporters:
+      prometheusremotewrite:
+        endpoint: prometheus-pushgateway:9091
+        tls:
+          insecure: true
+      jaeger/2:
+        endpoint: jaeger-collector:14250
+        tls:
+          insecure: true          
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+          http:
+          
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          exporters: [jaeger/2]
+          processors: [batch]
+        metrics:
+          receivers: [otlp]
+          exporters: [prometheusremotewrite]
+          processors: [batch]
