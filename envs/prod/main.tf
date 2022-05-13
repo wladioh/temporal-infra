@@ -95,14 +95,14 @@ module "temporalio" {
 module "dashboard" {
   source = "../../modules/dashboard"
   depends_on = [
-    module.temporalio
+    module.aks
   ]
 }
 
 module "postgres" {
   source = "../../modules/postgres"
   depends_on = [
-    module.dashboard
+    module.aks
   ]
 }
 
@@ -116,7 +116,7 @@ resource "helm_release" "prometheus" {
     "${file("./prometheus.yaml")}"
   ]
   depends_on = [
-    module.postgres
+    module.aks
   ]
 }
 
@@ -130,7 +130,7 @@ resource "helm_release" "jaeger" {
     "${file("./jaeger.yaml")}"
   ]
   depends_on = [
-    module.postgres
+    module.aks
   ]
 }
 
@@ -144,7 +144,7 @@ resource "helm_release" "grafana" {
     "${file("./grafana.yaml")}"
   ]
   depends_on = [
-    module.postgres
+    module.aks
   ]
 }
 #kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
@@ -159,7 +159,6 @@ resource "helm_release" "opentelemetry_collector" {
     "${file("./otpl-collector.yaml")}"
   ]
   depends_on = [
-    helm_release.jaeger,
-    helm_release.prometheus
+    module.aks
   ]
 }

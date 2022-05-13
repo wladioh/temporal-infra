@@ -41,16 +41,3 @@ spec:
         - name: postgredb
           persistentVolumeClaim:
             claimName: azure-managed-disk
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres
-  labels:
-    app: postgres
-spec:
-  type: NodePort
-  ports:
-    - port: 5432
-  selector:
-    app: postgres
