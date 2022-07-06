@@ -1,0 +1,7 @@
+global:
+  storageClass: default
+  postgresql:
+    auth:
+      database: postgresdb
+      username: postgresadmin
+      password: admin123

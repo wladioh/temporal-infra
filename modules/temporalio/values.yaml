@@ -1,6 +1,6 @@
 server:
   enabled: true
-  replicaCount: 1
+  replicaCount: 3
 cassandra:
   config:
       cluster_size: 1

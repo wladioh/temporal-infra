@@ -99,8 +99,22 @@ module "dashboard" {
   ]
 }
 
-module "postgres" {
-  source = "../../modules/postgres"
+# module "postgres" {
+#   source = "../../modules/postgres"
+#   depends_on = [
+#     module.aks
+#   ]
+# }
+
+resource "helm_release" "postgres" {
+  name             = "postgresql"
+  namespace        = "default"
+  create_namespace = true
+  repository       = "https://charts.bitnami.com/bitnami"
+  chart            = "postgresql"
+  values = [
+    "${file("./postgres.yaml")}"
+  ]
   depends_on = [
     module.aks
   ]
